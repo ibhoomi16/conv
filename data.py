@@ -1,11 +1,13 @@
 import streamlit as st
 from pymongo import MongoClient
 import json
+import toml
 
-# Predefined MongoDB Configuration
-MONGO_DB_URL = "mongodb+srv://<bhoomi16>@cluster0.5vcgj.mongodb.net/?retryWrites=true&w=majority"
-DB_NAME = "document"
-COLLECTION_NAME = "data"
+# Load MongoDB configuration from config.toml
+config = toml.load('config.toml')
+MONGO_DB_URL = config['mongodb']['url']
+DB_NAME = config['mongodb']['db_name']
+COLLECTION_NAME = config['mongodb']['collection_name']
 
 # Function to connect to MongoDB
 def connect_to_mongo(db_url, db_name, collection_name):
