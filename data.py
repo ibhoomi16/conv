@@ -7,18 +7,19 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Fetch MongoDB connection details from environment variables
-MONGO_DB_URL = os.getenv("MONGO_DB_URL")
-DB_NAME = os.getenv("DB_NAME")
-COLLECTION_NAME = os.getenv("COLLECTION_NAME")
+# Load MongoDB configuration from environment variables
+MONGO_DB_URL = os.getenv('MONGO_DB_URL')
+DB_NAME = os.getenv('DB_NAME')
+COLLECTION_NAME = os.getenv('COLLECTION_NAME')
 
-# Function to connect to MongoDB
+# Function to connect to MongoDB with SSL enabled
 def connect_to_mongo(db_url, db_name, collection_name):
     """
-    Connect to MongoDB and return the collection.
+    Connect to MongoDB and return the collection with SSL/TLS enabled.
     """
     try:
-        client = MongoClient(db_url)
+        # SSL configuration to ensure secure connection
+        client = MongoClient(db_url, tls=True, tlsAllowInvalidCertificates=False)
         db = client[db_name]
         return db[collection_name]
     except Exception as e:
