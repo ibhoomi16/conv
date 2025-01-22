@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import json
 
 # Predefined MongoDB Configuration
-MONGO_DB_URL = "mongodb+srv://bhoomi16@cluster0.5vcgj.mongodb.net/?retryWrites=true&w=majority"
+MONGO_DB_URL = "mongodb+srv://<bhoomi16>@cluster0.5vcgj.mongodb.net/?retryWrites=true&w=majority"
 DB_NAME = "document"
 COLLECTION_NAME = "data"
 
@@ -44,16 +44,18 @@ def fetch_recommendations_from_mongo(collection, job_id):
 st.title("Recommendations Fetcher with MongoDB Integration")
 
 # Input for job ID
-st.header("Enter Metadata for Job")
 job_id = st.text_input("Job ID (used for fetching MongoDB data)", "")
+
+# Input for metadata fields
+st.header("Metadata Fields")
 title = st.text_input("Guide Title", "Distal Radius Fracture Rehabilitation")
 stage = st.text_input("Stage", "Rehabilitation")
 disease = st.text_input("Disease Title", "Fracture")
-specialty = st.text_input("Specialty", "orthopedics")
+specialty = st.text_input("Specialty", "Orthopedics")
 
 # Process the data when the button is clicked
-if st.button("Process Data"):
-    if all([job_id, title, stage, disease, specialty]):
+if st.button("Fetch Recommendations"):
+    if job_id:
         try:
             # Connect to MongoDB and fetch data
             st.info("Connecting to MongoDB...")
@@ -65,16 +67,26 @@ if st.button("Process Data"):
             if fetched_data:
                 st.success(f"Fetched {len(fetched_data)} recommendations from the database.")
 
-                # Display the fetched data
-                st.subheader("Fetched Data:")
-                st.json(fetched_data)
+                # Add metadata to the results
+                metadata = {
+                    "job_id": job_id,
+                    "title": title,
+                    "stage": stage,
+                    "disease": disease,
+                    "specialty": specialty,
+                    "recommendations": fetched_data
+                }
+
+                # Display the combined metadata and fetched data
+                st.subheader("Fetched Data with Metadata:")
+                st.json(metadata)
 
                 # Option to download JSON file
-                json_output = json.dumps(fetched_data, indent=2)
+                json_output = json.dumps(metadata, indent=2)
                 st.download_button(
                     label="Download JSON",
                     data=json_output,
-                    file_name="output.json",
+                    file_name="output_with_metadata.json",
                     mime="application/json"
                 )
             else:
@@ -82,4 +94,4 @@ if st.button("Process Data"):
         except Exception as e:
             st.error(f"Error processing data: {e}")
     else:
-        st.warning("Please fill in all required fields.")
+        st.warning("Please enter a valid Job ID.")
