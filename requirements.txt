@@ -1,2 +1,4 @@
 pymongo 
 streamlit
+python-dotenv
+streamlit
