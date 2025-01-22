@@ -1,13 +1,16 @@
 import streamlit as st
 from pymongo import MongoClient
 import json
-import toml
+import os
+from dotenv import load_dotenv
 
-# Load MongoDB configuration from config.toml
-config = toml.load('config.toml')
-MONGO_DB_URL = config['mongodb']['url']
-DB_NAME = config['mongodb']['db_name']
-COLLECTION_NAME = config['mongodb']['collection_name']
+# Load environment variables from .env file
+load_dotenv()
+
+# Fetch MongoDB connection details from environment variables
+MONGO_DB_URL = os.getenv("MONGO_DB_URL")
+DB_NAME = os.getenv("DB_NAME")
+COLLECTION_NAME = os.getenv("COLLECTION_NAME")
 
 # Function to connect to MongoDB
 def connect_to_mongo(db_url, db_name, collection_name):
